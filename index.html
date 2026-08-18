@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Warehouse Operations & Order Fulfillment System</title>
+    <link rel="stylesheet" href="static/style.css">
+    <style>
+        .hero-banner {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .hero-banner h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .hero-banner p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 800px;
+            line-height: 1.5;
+        }
+        .badge-live {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .metric-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .metric-title {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .metric-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #111827;
+            margin: 5px 0;
+        }
+        .metric-subtitle {
+            font-size: 13px;
+            color: #10b981;
+            font-weight: 600;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .feature-card {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+        .feature-card h3 {
+            font-size: 18px;
+            color: #111827;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        .tech-stack-section {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+        }
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .tech-tag {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #bfdbfe;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">📦</div>
+                <div class="logo-text">
+                    <h2>Smart<span>Warehouse</span></h2>
+                    <small>Operations Platform</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-heading">MAIN MENU</p>
+                <a href="#overview" class="nav-link active">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#orders" class="nav-link">
+                    <span class="nav-icon">🛒</span>
+                    <span>Orders</span>
+                </a>
+                <a href="#inventory" class="nav-link">
+                    <span class="nav-icon">📦</span>
+                    <span>Inventory</span>
+                </a>
+                <a href="#picking" class="nav-link">
+                    <span class="nav-icon">👷</span>
+                    <span>Picking & Packing</span>
+                </a>
+                <a href="#qc" class="nav-link">
+                    <span class="nav-icon">🔍</span>
+                    <span>QC & Exceptions</span>
+                </a>
+                <a href="#analytics" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    <span>Analytics</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            
+            <!-- HERO BANNER -->
+            <div class="hero-banner" id="overview">
+                <span class="badge-live">GitHub Pages Online Preview</span>
+                <h1>Smart Warehouse Operations & Order Fulfillment System</h1>
+                <p>
+                    An end-to-end intelligent warehouse management and order fulfillment platform designed to streamline real-time inventory tracking, multi-stage order picking, quality control verification, and SLA analytics.
+                </p>
+            </div>
+
+            <!-- KEY METRICS -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">📦</div>
+                    <div class="metric-title">Total Active Inventory</div>
+                    <div class="metric-value">1,250</div>
+                    <div class="metric-subtitle">Across 5 Warehouse Zones</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">🛒</div>
+                    <div class="metric-title">Orders Processed Today</div>
+                    <div class="metric-value">148</div>
+                    <div class="metric-subtitle">⚡ 99.2% On-Time SLA</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">👷</div>
+                    <div class="metric-title">Active Picking Waves</div>
+                    <div class="metric-value">12</div>
+                    <div class="metric-subtitle">Optimized Pick Paths</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">⚠️</div>
+                    <div class="metric-title">Reorder Alerts</div>
+                    <div class="metric-value">3</div>
+                    <div class="metric-subtitle" style="color: #f59e0b;">Low Stock Warning</div>
+                </div>
+            </div>
+
+            <!-- CORE MODULES -->
+            <h2 style="margin-bottom: 20px; font-size: 22px; color: #111827;">Platform Core Modules</h2>
+            <div class="features-grid">
+                <div class="feature-card" id="orders">
+                    <h3>🛒 Order Management & Fulfillment</h3>
+                    <p>Priority order queueing with automatic allocation based on inventory stock levels, order SLA timers, and customer delivery windows.</p>
+                </div>
+
+                <div class="feature-card" id="inventory">
+                    <h3>📦 Real-Time Inventory Control</h3>
+                    <p>SKU-level tracking across aisle locations (A-01 to E-02) with automated low-stock reorder point notifications and damaged stock logging.</p>
+                </div>
+
+                <div class="feature-card" id="picking">
+                    <h3>👷 Pick & Pack Workflow</h3>
+                    <p>Guided picking lists with optimized warehouse route navigation, barcode verification, and single-click item packing confirmation.</p>
+                </div>
+
+                <div class="feature-card" id="qc">
+                    <h3>🔍 Quality Control & Exceptions</h3>
+                    <p>Automated anomaly detection for damaged goods, mispicks, and inventory discrepancies with fast exception escalation resolution.</p>
+                </div>
+            </div>
+
+            <!-- TECH STACK -->
+            <div class="tech-stack-section" id="analytics">
+                <h3 style="margin-bottom: 10px; font-size: 18px; color: #111827;">System Architecture & Technology Stack</h3>
+                <p style="font-size: 14px; color: #4b5563;">Built with Python Flask backend, SQLite transactional storage, custom responsive CSS/JS, and Vercel/GitHub Pages deployment configurations.</p>
+                <div class="tech-tags">
+                    <span class="tech-tag">Python 3.10+</span>
+                    <span class="tech-tag">Flask Web Framework</span>
+                    <span class="tech-tag">SQLite Database</span>
+                    <span class="tech-tag">HTML5 & CSS3</span>
+                    <span class="tech-tag">JavaScript ES6</span>
+                    <span class="tech-tag">Gunicorn WSGI</span>
+                    <span class="tech-tag">GitHub Actions & Pages</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
