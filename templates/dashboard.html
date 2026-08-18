@@ -1,0 +1,572 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block breadcrumb %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <!-- FULL-SCREEN HERO COVER BANNER -->
+    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); color: white; padding: 40px 35px; border-radius: 20px; margin-bottom: 30px; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.4); border: 1px solid rgba(99, 102, 241, 0.3);">
+
+        <!-- GLOW ACCENT BACKGROUND CIRCLES -->
+        <div style="position: absolute; top: -60px; right: -60px; width: 250px; height: 250px; background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -80px; left: 20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
+
+        <div style="position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
+
+            <!-- LEFT CONTENT -->
+            <div style="max-width: 650px;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); padding: 6px 14px; border-radius: 20px; margin-bottom: 16px;">
+                    <span style="width: 10px; height: 10px; background: #22c55e; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #22c55e;"></span>
+                    <span style="color: #4ade80; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">Engine Active</span>
+                </div>
+
+                <h1 style="margin: 0 0 12px 0; font-size: 34px; font-weight: 800; color: #ffffff; line-height: 1.2; letter-spacing: -0.5px;">
+                    🤖 Smart Fulfillment & Decision Engine
+                </h1>
+
+                <p style="margin: 0 0 22px 0; color: #cbd5e1; font-size: 15px; line-height: 1.6;">
+                    Next-generation warehouse intelligence powering automated priority preemption, aisle route optimization, quality check verification, and exception resolution.
+                </p>
+
+                <!-- CAPABILITY BADGES -->
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <span style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #e2e8f0;">⚡ Automated Priority Preemption</span>
+                    <span style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #e2e8f0;">🗺️ Aisle Route Optimization</span>
+                    <span style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #e2e8f0;">🔍 Quality Check Gate</span>
+                    <span style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #e2e8f0;">🚨 Exception Resolution</span>
+                </div>
+            </div>
+
+            <!-- RIGHT CALL-TO-ACTION BUTTONS -->
+            <div style="display: flex; flex-direction: column; gap: 14px; min-width: 220px;">
+                <a href="{{ url_for('new_order') }}" class="btn" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 700; font-size: 15px; text-align: center; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);">
+                    ➕ Create Order
+                </a>
+                <a href="{{ url_for('qc') }}" class="btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 16px 28px; border-radius: 12px; font-weight: 700; font-size: 15px; text-align: center; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.35);">
+                    🔍 Quality Check Gate
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- METRICS -->
+
+    <div class="metrics-grid">
+
+        <div class="metric-card">
+            <div class="metric-icon">🛒</div>
+            <div>
+                <span>Total Orders</span>
+                <h2>{{ stats.total_orders }}</h2>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">⏳</div>
+            <div>
+                <span>Pending Orders</span>
+                <h2>{{ stats.pending_orders }}</h2>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">⚙️</div>
+            <div>
+                <span>Picking Orders</span>
+                <h2>{{ stats.picking_orders }}</h2>
+            </div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-icon">🚚</div>
+            <div>
+                <span>Dispatched</span>
+                <h2>{{ stats.dispatched_orders }}</h2>
+            </div>
+        </div>
+
+        <div class="metric-card warning">
+            <div class="metric-icon">⚠️</div>
+            <div>
+                <span>Low Stock</span>
+                <h2>{{ stats.low_stock }}</h2>
+            </div>
+        </div>
+
+        <div class="metric-card danger">
+            <div class="metric-icon">🚨</div>
+            <div>
+                <span>Open Exceptions</span>
+                <h2>{{ stats.open_exceptions }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- INVENTORY SUMMARY -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card">
+            <div class="summary-icon">📦</div>
+            <div>
+                <span>Total Products</span>
+                <strong>{{ stats.total_products }}</strong>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">🏭</div>
+            <div>
+                <span>Total Stock Units</span>
+                <strong>{{ stats.total_stock }}</strong>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- RECENT ORDERS -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+            <div>
+                <h2>🛒 Recent Orders</h2>
+                <p>Latest warehouse orders</p>
+            </div>
+
+            <a href="{{ url_for('orders') }}" class="view-link">
+                View All →
+            </a>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% if recent_orders %}
+
+                    {% for order in recent_orders %}
+
+                    <tr>
+
+                        <td>
+                            <a
+                                href="{{ url_for('order_detail', order_id=order['id']) }}"
+                                class="order-link"
+                            >
+                                {{ order['order_no'] }}
+                            </a>
+                        </td>
+
+                        <td>
+                            {{ order['customer'] }}
+                        </td>
+
+                        <td>
+
+                            {% if order['priority'] == 'High' %}
+
+                                <span class="badge high">
+                                    High
+                                </span>
+
+                            {% elif order['priority'] == 'Medium' %}
+
+                                <span class="badge medium">
+                                    Medium
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge low">
+                                    Low
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            <span class="status-badge">
+                                {{ order['status'] }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ order['created_at'] }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="5" class="empty">
+                            No orders available.
+                        </td>
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+            <div>
+                <h2>⚡ Quick Actions</h2>
+                <p>Manage your warehouse operations</p>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+
+            <a href="{{ url_for('orders') }}" class="action-btn">
+                🛒 Orders
+            </a>
+
+            <a href="{{ url_for('inventory') }}" class="action-btn">
+                📦 Inventory
+            </a>
+
+            <a href="{{ url_for('picking') }}" class="action-btn">
+                🧺 Picking
+            </a>
+
+            <a href="{{ url_for('dispatch') }}" class="action-btn">
+                🚚 Dispatch
+            </a>
+
+            <a href="{{ url_for('analytics') }}" class="action-btn">
+                📈 Analytics
+            </a>
+
+            <a href="{{ url_for('alerts') }}" class="action-btn">
+                🚨 Alerts
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+.dashboard-page {
+    width: 100%;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.page-header p {
+    margin: 7px 0 0;
+    color: #6b7280;
+}
+
+.new-order-btn {
+    text-decoration: none;
+    background: #2563eb;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+
+/* METRICS */
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metric-card {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.metric-icon {
+    font-size: 28px;
+}
+
+.metric-card span {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.metric-card h2 {
+    margin: 4px 0 0;
+    font-size: 25px;
+}
+
+.metric-card.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.metric-card.danger {
+    border-left: 4px solid #ef4444;
+}
+
+
+/* SUMMARY */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.summary-icon {
+    font-size: 35px;
+}
+
+.summary-card span {
+    display: block;
+    color: #6b7280;
+}
+
+.summary-card strong {
+    display: block;
+    font-size: 28px;
+    margin-top: 5px;
+}
+
+
+/* CARD */
+
+.dashboard-card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-header h2 {
+    margin: 0;
+}
+
+.card-header p {
+    margin: 5px 0 0;
+    color: #6b7280;
+}
+
+.view-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+
+/* TABLE */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #f3f4f6;
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.order-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+
+/* BADGES */
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.high {
+    background: #ffedd5;
+    color: #9a3412;
+}
+
+.badge.medium {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge.low {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.status-badge {
+    background: #e0f2fe;
+    color: #075985;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+}
+
+.empty {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+}
+
+
+/* QUICK ACTIONS */
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+}
+
+.action-btn {
+    text-decoration: none;
+    text-align: center;
+    padding: 14px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.action-btn:hover {
+    background: #e5e7eb;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+
+    .metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .quick-actions {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 450px) {
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

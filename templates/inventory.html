@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory Management{% endblock %}
+{% block breadcrumb %}Inventory{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+        <div>
+            <h1>📦 Smart Inventory & Stock Monitoring</h1>
+            <p>Real-time stock tracking, reservation visibility, and automated purchase reordering.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+            <div>
+                <h2>📦 Warehouse Inventory</h2>
+                <p>Live inventory counts and location mapping</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <form action="{{ url_for('restock_all_out_of_stock') }}" method="POST" style="margin: 0;">
+                    <button type="submit" class="btn btn-success" style="font-size: 13px; font-weight: 600;">
+                        🚀 Restock All Low/Out-of-Stock
+                    </button>
+                </form>
+                <div class="search-box" style="margin-bottom: 0;">
+                    <input type="text" class="search-input" placeholder="🔍 Search SKU, product name, location..." style="padding: 8px 14px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 13px; width: 240px;">
+                </div>
+            </div>
+        </div>
+
+        {% if products %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Total Stock</th>
+                        <th>Reserved</th>
+                        <th>Available</th>
+                        <th>Reorder Level</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for item in products %}
+
+                <tr>
+
+                    <td><strong>{{ item["name"] }}</strong></td>
+
+                    <td>{{ item["sku"] }}</td>
+
+                    <td>{{ item["category"] }}</td>
+
+                    <td><span class="badge low">📍 {{ item["location"] }}</span></td>
+
+                    <td><strong>{{ item["stock"] }}</strong></td>
+
+                    <td><span style="color: #6b7280;">{{ item["reserved"] }}</span></td>
+
+                    <td>
+                        <strong style="color: {% if item['available'] <= 5 %}#dc2626{% else %}#16a34a{% endif %}; font-size: 15px;">
+                            {{ item["available"] }}
+                        </strong>
+                    </td>
+
+                    <td>{{ item["reorder_level"] }}</td>
+
+                    <td>
+                        {% if item["stock"] <= item["reorder_level"] %}
+                            <span class="badge badge-danger">⚠️ Low Stock</span>
+                        {% else %}
+                            <span class="badge badge-success">✅ Healthy</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <form action="{{ url_for('reorder_product', product_id=item['id']) }}" method="POST" style="margin:0;">
+                            <button type="submit" class="btn btn-warning" style="padding: 5px 10px; font-size: 12px; font-weight: 600;">
+                                ⚡ Auto-Restock (+{{ item['reorder_qty'] or 25 }})
+                            </button>
+                        </form>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div class="icon">📦</div>
+
+            <h2>No Inventory Data</h2>
+
+            <p>No inventory records are currently available.</p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

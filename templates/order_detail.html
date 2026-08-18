@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Order Details - {{ order["order_no"] }}{% endblock %}
+{% block breadcrumb %}Order {{ order["order_no"] }}{% endblock %}
+
+{% block content %}
+
+<div class="confirmation-page">
+
+    <!-- FULFILLMENT LIFECYCLE TRACKER -->
+    <div class="card" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; border-radius: 14px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <h2 style="margin: 0; font-size: 22px; color: white;">⚡ Order Fulfillment Lifecycle</h2>
+                <p style="margin-top: 4px; color: #94a3b8; font-size: 13px;">Real-time automated status tracker</p>
+            </div>
+            <span class="badge" style="background: #38bdf8; color: #0c4a6e; font-size: 13px; font-weight: 700; padding: 6px 14px;">
+                {{ order["order_no"] }} • {{ order["status"] }}
+            </span>
+        </div>
+
+        <!-- PROGRESS STEPS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; position: relative; margin: 30px 10px 10px;">
+            {% set statuses = ['Pending', 'Picking', 'Packed', 'Ready', 'Dispatched'] %}
+            {% set status_step = 1 %}
+            {% if order["status"] == 'Picking' %}{% set status_step = 2 %}{% endif %}
+            {% if order["status"] == 'Packed' %}{% set status_step = 3 %}{% endif %}
+            {% if order["status"] == 'Ready' %}{% set status_step = 4 %}{% endif %}
+            {% if order["status"] == 'Dispatched' %}{% set status_step = 5 %}{% endif %}
+
+            <div style="position: absolute; top: 18px; left: 5%; right: 5%; height: 4px; background: #334155; z-index: 1;"></div>
+            <div style="position: absolute; top: 18px; left: 5%; width: {{ (status_step - 1) * 22.5 }}%; height: 4px; background: #38bdf8; z-index: 2; transition: 0.5s ease;"></div>
+
+            <!-- STEP 1 -->
+            <div style="position: relative; z-index: 3; text-align: center;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: {% if status_step >= 1 %}#38bdf8{% else %}#334155{% endif %}; color: {% if status_step >= 1 %}#0f172a{% else %}#94a3b8{% endif %}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto 8px; box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);">1</div>
+                <span style="font-size: 12px; font-weight: 600; color: {% if status_step >= 1 %}#f8fafc{% else %}#64748b{% endif %};">Created</span>
+            </div>
+
+            <!-- STEP 2 -->
+            <div style="position: relative; z-index: 3; text-align: center;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: {% if status_step >= 2 %}#38bdf8{% else %}#334155{% endif %}; color: {% if status_step >= 2 %}#0f172a{% else %}#94a3b8{% endif %}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto 8px;">2</div>
+                <span style="font-size: 12px; font-weight: 600; color: {% if status_step >= 2 %}#f8fafc{% else %}#64748b{% endif %};">Picking</span>
+            </div>
+
+            <!-- STEP 3 -->
+            <div style="position: relative; z-index: 3; text-align: center;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: {% if status_step >= 3 %}#38bdf8{% else %}#334155{% endif %}; color: {% if status_step >= 3 %}#0f172a{% else %}#94a3b8{% endif %}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto 8px;">3</div>
+                <span style="font-size: 12px; font-weight: 600; color: {% if status_step >= 3 %}#f8fafc{% else %}#64748b{% endif %};">Packed</span>
+            </div>
+
+            <!-- STEP 4 -->
+            <div style="position: relative; z-index: 3; text-align: center;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: {% if status_step >= 4 %}#38bdf8{% else %}#334155{% endif %}; color: {% if status_step >= 4 %}#0f172a{% else %}#94a3b8{% endif %}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto 8px;">4</div>
+                <span style="font-size: 12px; font-weight: 600; color: {% if status_step >= 4 %}#f8fafc{% else %}#64748b{% endif %};">Quality Check</span>
+            </div>
+
+            <!-- STEP 5 -->
+            <div style="position: relative; z-index: 3; text-align: center;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: {% if status_step >= 5 %}#22c55e{% else %}#334155{% endif %}; color: {% if status_step >= 5 %}#0f172a{% else %}#94a3b8{% endif %}; display: flex; align-items: center; justify-content: center; font-weight: bold; margin: 0 auto 8px;">5</div>
+                <span style="font-size: 12px; font-weight: 600; color: {% if status_step >= 5 %}#4ade80{% else %}#64748b{% endif %};">Dispatched</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SMART DECISION ENGINE PANEL -->
+    <div class="card" style="border-left: 5px solid #2563eb; background: #eff6ff;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3 style="margin: 0; color: #1e40af; font-size: 18px;">🤖 Smart Decision Engine Recommendations</h3>
+                <p style="margin-top: 5px; color: #3b82f6; font-size: 13px;">Automated SLA prioritization & stock conflict resolution</p>
+            </div>
+            
+            {% if order["priority"] in ['Urgent', 'High'] and order["status"] == 'Pending' %}
+            <form action="{{ url_for('smart_reallocate', order_id=order['id']) }}" method="POST">
+                <button type="submit" class="btn btn-warning" style="font-size: 13px; font-weight: 700;">
+                    ⚡ Auto-Reallocate Reserved Stock
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <!-- ORDER INFORMATION -->
+    <div class="card">
+
+        <div class="card-header">
+            <div>
+                <h2>📝 Customer & Order Details</h2>
+                <p>Order specifications and SLA commitment</p>
+            </div>
+
+            <div class="order-number">
+                {{ order["order_no"] }}
+            </div>
+        </div>
+
+        <div class="details-grid">
+
+            <div class="detail-box">
+                <span>Customer</span>
+                <strong>{{ order["customer"] }}</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Priority</span>
+                <strong style="color: {% if order['priority'] == 'High' or order['priority'] == 'Urgent' %}#dc2626{% else %}#2563eb{% endif %};">
+                    {{ order["priority"] }}
+                </strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Status</span>
+                <strong class="status">{{ order["status"] }}</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Quality Check</span>
+                <strong>{{ order["qc_status"] or "Pending" }}</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Target SLA</span>
+                <strong>{{ order["sla_hours"] or 24 }} Hours</strong>
+            </div>
+
+            <div class="detail-box">
+                <span>Created At</span>
+                <strong>{{ order["created_at"] }}</strong>
+            </div>
+
+        </div>
+
+        {% if order["notes"] %}
+        <div class="notes-box">
+            <strong>📝 Order Notes</strong>
+            <p>{{ order["notes"] }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+
+    <!-- PRODUCTS & ROUTE OPTIMIZATION -->
+    <div class="card">
+
+        <div class="card-header">
+            <div>
+                <h2>📦 Ordered Products & Optimized Route</h2>
+                <p>Sequential picking path organized by warehouse aisle</p>
+            </div>
+        </div>
+
+        {% if items %}
+
+        <div class="table-wrapper">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aisle / Location</th>
+                        <th>Product Name</th>
+                        <th>SKU</th>
+                        <th>Requested</th>
+                        <th>Allocated</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <span class="badge low" style="font-weight: 700;">
+                                📍 {{ item["location"] }}
+                            </span>
+                        </td>
+
+                        <td><strong>{{ item["name"] }}</strong></td>
+
+                        <td>{{ item["sku"] }}</td>
+
+                        <td>
+                            <span class="quantity-badge">
+                                {{ item["requested"] }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="badge {% if item['allocated'] >= item['requested'] %}badge-success{% else %}badge-warning{% endif %}">
+                                {{ item["allocated"] }} / {{ item["requested"] }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if item["allocated"] >= item["requested"] %}
+                                <span style="color: #16a34a; font-weight: bold;">Ready to Pick</span>
+                            {% else %}
+                                <span style="color: #dc2626; font-weight: bold;">Stock Shortage</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            No products found for this order.
+        </div>
+        {% endif %}
+
+    </div>
+
+
+    <!-- ACTION BUTTONS -->
+    <div class="action-buttons">
+        <a href="{{ url_for('orders') }}" class="btn btn-primary">
+            🛒 View All Orders
+        </a>
+
+        <a href="{{ url_for('picking') }}" class="btn btn-warning">
+            👷 Go to Picking Queue
+        </a>
+
+        <a href="{{ url_for('qc') }}" class="btn btn-secondary">
+            🔍 Go to Quality Check
+        </a>
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-success">
+            📊 Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+<style>
+.confirmation-page {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.order-number {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.detail-box {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 10px;
+}
+
+.detail-box span {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.detail-box strong {
+    font-size: 15px;
+}
+
+.notes-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff7ed;
+    border-left: 4px solid #f59e0b;
+    border-radius: 8px;
+}
+
+.quantity-badge {
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+@media (max-width: 800px) {
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block breadcrumb %}Analytics{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+
+        <div>
+            <h1>📈 Analytics</h1>
+            <p>Warehouse performance and operational insights.</p>
+        </div>
+
+    </div>
+
+    <div class="analytics-container">
+
+        <div class="analytics-card">
+
+            <h2>📊 Order Performance</h2>
+
+            <br>
+
+            <div class="progress-item">
+
+                <div class="progress-label">
+                    <span>Orders Processed</span>
+                    <strong>75%</strong>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:75%;"></div>
+                </div>
+
+            </div>
+
+            <div class="progress-item">
+
+                <div class="progress-label">
+                    <span>Dispatch Efficiency</span>
+                    <strong>85%</strong>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:85%;"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="analytics-card">
+
+            <h2>🏭 Warehouse Efficiency</h2>
+
+            <br>
+
+            <div class="progress-item">
+
+                <div class="progress-label">
+                    <span>Inventory Utilization</span>
+                    <strong>68%</strong>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:68%;"></div>
+                </div>
+
+            </div>
+
+            <div class="progress-item">
+
+                <div class="progress-label">
+                    <span>Overall Efficiency</span>
+                    <strong>82%</strong>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:82%;"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

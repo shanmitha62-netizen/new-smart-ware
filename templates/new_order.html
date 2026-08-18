@@ -1,0 +1,494 @@
+{% extends "base.html" %}
+
+{% block title %}New Order{% endblock %}
+
+{% block breadcrumb %}New Order{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>➕ Create New Order</h1>
+        <p>Enter customer and order information.</p>
+    </div>
+
+    <a href="{{ url_for('orders') }}" class="btn btn-secondary">
+        ← Back to Orders
+    </a>
+</div>
+
+
+<form method="POST">
+
+    <!-- CUSTOMER INFORMATION -->
+
+    <div class="card">
+
+        <div class="card-header">
+            <div>
+                <h2>📝 Order Information</h2>
+                <p>Enter customer and order information.</p>
+            </div>
+        </div>
+
+
+        <div class="form-grid">
+
+            <!-- CUSTOMER -->
+
+            <div class="form-group">
+
+                <label for="customer">
+                    Customer Name
+                </label>
+
+                <input
+                    type="text"
+                    id="customer"
+                    name="customer"
+                    placeholder="Enter customer name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PRIORITY -->
+
+            <div class="form-group">
+
+                <label for="priority">
+                    Priority
+                </label>
+
+                <select
+                    id="priority"
+                    name="priority"
+                    required
+                >
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+                    <option value="Medium" selected>
+                        Medium
+                    </option>
+
+                    <option value="High">
+                        High
+                    </option>
+
+                    <option value="Urgent">
+                        Urgent
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- NOTES -->
+
+            <div class="form-group full-width">
+
+                <label for="notes">
+                    Order Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    name="notes"
+                    placeholder="Enter any special instructions..."
+                ></textarea>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- PRODUCTS -->
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <h2>📦 Add Products</h2>
+
+                <p>
+                    Select products and enter the required quantity.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div id="products-container">
+
+            <div class="product-row">
+
+                <div class="form-group product-select">
+
+                    <label>
+                        Product
+                    </label>
+
+                    <select
+                        name="product_id[]"
+                        required
+                    >
+
+                        <option value="">
+                            -- Select Product --
+                        </option>
+
+                        {% for product in products %}
+
+                        <option value="{{ product['id'] }}">
+
+                            {{ product['name'] }}
+
+                            -
+                            {{ product['sku'] }}
+
+                            |
+                            Available:
+                            {{ product['stock'] - product['reserved'] }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group quantity-box">
+
+                    <label>
+                        Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        name="quantity[]"
+                        min="1"
+                        value="1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="remove-box">
+
+                    <button
+                        type="button"
+                        class="remove-btn"
+                        onclick="removeProduct(this)"
+                    >
+                        🗑️
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ADD PRODUCT BUTTON -->
+
+        <button
+            type="button"
+            class="btn btn-primary add-product-btn"
+            onclick="addProduct()"
+        >
+            ➕ Add Another Product
+        </button>
+
+    </div>
+
+
+
+    <!-- ACTIONS -->
+
+    <div class="form-actions">
+
+        <a
+            href="{{ url_for('orders') }}"
+            class="btn btn-secondary"
+        >
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-success"
+        >
+            ✅ Create Order
+        </button>
+
+    </div>
+
+</form>
+
+
+
+<style>
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.page-header p {
+    margin-top: 6px;
+    color: #6b7280;
+}
+
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+}
+
+.card-header {
+    margin-bottom: 20px;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.card-header p {
+    margin-top: 5px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+
+/* PRODUCT ROW */
+
+.product-row {
+    display: grid;
+    grid-template-columns: 1fr 180px 55px;
+    gap: 15px;
+    align-items: end;
+
+    padding: 18px;
+
+    margin-bottom: 15px;
+
+    background: #f9fafb;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+}
+
+
+.product-select {
+    margin: 0;
+}
+
+
+.quantity-box {
+    margin: 0;
+}
+
+
+.remove-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1px;
+}
+
+
+.remove-btn {
+    border: none;
+    background: #fee2e2;
+    color: #dc2626;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 17px;
+}
+
+
+.remove-btn:hover {
+    background: #fecaca;
+}
+
+
+.add-product-btn {
+    margin-top: 5px;
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    margin-bottom: 30px;
+}
+
+
+@media (max-width: 700px) {
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .product-row {
+        grid-template-columns: 1fr;
+    }
+
+    .remove-box {
+        justify-content: flex-start;
+    }
+
+    .form-actions {
+        justify-content: stretch;
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+
+
+<script>
+
+function addProduct() {
+
+    const container =
+        document.getElementById("products-container");
+
+    const firstRow =
+        container.querySelector(".product-row");
+
+    const newRow =
+        firstRow.cloneNode(true);
+
+
+    /* Reset selected product */
+
+    newRow.querySelector(
+        "select"
+    ).selectedIndex = 0;
+
+
+    /* Reset quantity */
+
+    newRow.querySelector(
+        "input"
+    ).value = 1;
+
+
+    container.appendChild(newRow);
+
+}
+
+
+function removeProduct(button) {
+
+    const container =
+        document.getElementById("products-container");
+
+    const rows =
+        container.querySelectorAll(".product-row");
+
+
+    /* Keep at least one product row */
+
+    if (rows.length === 1) {
+
+        alert(
+            "At least one product is required."
+        );
+
+        return;
+
+    }
+
+
+    button
+        .closest(".product-row")
+        .remove();
+
+}
+
+</script>
+
+{% endblock %}

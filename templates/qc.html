@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Quality Check (QC) Gate & Defect Resolution{% endblock %}
+{% block breadcrumb %}Quality Check Gate{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+        <div>
+            <h1>🔍 Quality Check (QC) Gate & Defect Action Center</h1>
+            <p>Itemized barcode scanning, defect reporting, and 1-click automated resolution actions.</p>
+        </div>
+    </div>
+
+
+    <!-- QC OVERVIEW CARDS -->
+    <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 25px;">
+        <div class="metric-card">
+            <div class="metric-icon">🔍</div>
+            <div>
+                <span>Awaiting QC Inspection</span>
+                <h2>{{ orders|length }}</h2>
+            </div>
+        </div>
+
+        <div class="metric-card warning">
+            <div class="metric-icon">🛡️</div>
+            <div>
+                <span>Quality Gate Standard</span>
+                <h2>100% Verified</h2>
+            </div>
+        </div>
+
+        <div class="metric-card danger">
+            <div class="metric-icon">⚠️</div>
+            <div>
+                <span>Defect Action Protocol</span>
+                <h2>Active Resolution</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- INSPECTION CARDS LIST -->
+    {% if orders_with_items %}
+
+        {% for entry in orders_with_items %}
+        {% set order = entry["order"] %}
+        {% set items = entry["items"] %}
+
+        <div class="dashboard-card" style="border-left: 5px solid {% if order['status'] == 'QC Failed' %}#ef4444{% else %}#3b82f6{% endif %}; margin-bottom: 25px;">
+
+            <div class="card-header" style="border-bottom: 1px solid #f3f4f6; pb-3; margin-bottom: 15px;">
+                <div>
+                    <h3 style="margin: 0; font-size: 19px; display: flex; align-items: center; gap: 10px;">
+                        <span>📦 {{ order['order_no'] }}</span>
+                        <span class="badge {{ order['priority']|lower }}">
+                            {{ order['priority'] }} Priority
+                        </span>
+                        <span class="status-badge" style="background: {% if order['status'] == 'QC Failed' %}#fee2e2{% else %}#e0f2fe{% endif %}; color: {% if order['status'] == 'QC Failed' %}#991b1b{% else %}#075985{% endif %};">
+                            {{ order['status'] }}
+                        </span>
+                    </h3>
+                    <p style="margin-top: 5px; color: #6b7280; font-size: 13px;">Customer: <strong>{{ order['customer'] }}</strong> • Created: {{ order['created_at'] }}</p>
+                </div>
+
+                {% if order['status'] != 'QC Failed' %}
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <!-- PASS FORM -->
+                    <form action="{{ url_for('update_qc', order_id=order['id']) }}" method="POST" style="margin:0;">
+                        <input type="hidden" name="result" value="Passed">
+                        <button type="submit" class="btn btn-success" style="font-weight: 700; padding: 9px 18px;">
+                            ✅ Pass QC Inspection
+                        </button>
+                    </form>
+
+                    <!-- FAIL FORM -->
+                    <form action="{{ url_for('update_qc', order_id=order['id']) }}" method="POST" style="margin:0;" onsubmit="return promptFailReason(this);">
+                        <input type="hidden" name="result" value="Failed">
+                        <input type="hidden" name="notes" id="notes_{{ order['id'] }}" value="">
+                        <button type="submit" class="btn btn-danger" style="font-weight: 700; padding: 9px 18px;">
+                            ⚠️ Report Defect
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+
+            <!-- DEFECT ACTION RESOLUTION CENTER BANNER (WHEN QC FAILED) -->
+            {% if order['status'] == 'QC Failed' %}
+            <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <div>
+                        <h4 style="margin: 0; color: #991b1b; font-size: 16px;">⚠️ QC Defect Flagged — Select Resolution Action</h4>
+                        <p style="margin-top: 4px; color: #7f1d1d; font-size: 13px;">Choose automated operational decision for {{ order['order_no'] }}:</p>
+                    </div>
+                    <span class="badge danger" style="font-weight: bold;">Action Required</span>
+                </div>
+
+                <!-- 3 DEFECT RESOLUTION BUTTONS -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <form action="{{ url_for('qc_resolve_replacement', order_id=order['id']) }}" method="POST" style="margin:0;">
+                        <button type="submit" class="btn btn-primary" style="background: #2563eb; color: white; font-weight: 600; font-size: 12px;">
+                            🔄 Quarantine Damaged & Request Replacement Pick
+                        </button>
+                    </form>
+
+                    <form action="{{ url_for('qc_resolve_partial_dispatch', order_id=order['id']) }}" method="POST" style="margin:0;">
+                        <button type="submit" class="btn btn-success" style="background: #16a34a; color: white; font-weight: 600; font-size: 12px;">
+                            🚚 Approve Partial Dispatch for Intact Items
+                        </button>
+                    </form>
+
+                    <form action="{{ url_for('qc_resolve_cancel', order_id=order['id']) }}" method="POST" style="margin:0;" onsubmit="return confirm('Cancel order and release reserved stock back to inventory?');">
+                        <button type="submit" class="btn btn-secondary" style="background: #6b7280; color: white; font-weight: 600; font-size: 12px;">
+                            🛑 Cancel Order & Release Stock
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+
+            <!-- ITEMIZED ITEM CHECKLIST -->
+            <h4 style="margin: 10px 0; font-size: 14px; color: #374151;">📋 Item Inspection Breakdown</h4>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">Scan</th>
+                            <th>Product Name</th>
+                            <th>SKU</th>
+                            <th>Location</th>
+                            <th>Quantity</th>
+                            <th>Inspection Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" checked style="width: 18px; height: 18px; cursor: pointer;">
+                            </td>
+
+                            <td><strong>{{ item["name"] }}</strong></td>
+
+                            <td><code>{{ item["sku"] }}</code></td>
+
+                            <td><span class="badge low">📍 {{ item["location"] }}</span></td>
+
+                            <td><span class="quantity-badge">{{ item["requested"] }}</span></td>
+
+                            <td>
+                                {% if order['status'] == 'QC Failed' %}
+                                    <span class="badge badge-danger">⚠️ Defect Reported</span>
+                                {% else %}
+                                    <span class="badge badge-success">Intact & Verified</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    {% else %}
+
+        <div class="dashboard-card">
+            <div class="empty-state" style="text-align: center; padding: 50px; color: #6b7280;">
+                <div class="icon" style="font-size: 50px; margin-bottom: 12px;">🔍</div>
+                <h2 style="margin: 0; color: #111827;">QC Queue Clear</h2>
+                <p style="margin-top: 8px;">All packed shipments have passed quality inspection and are ready for dispatch.</p>
+            </div>
+        </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+function promptFailReason(form) {
+    const reason = prompt("Enter QC Defect Description (e.g., Damaged Seal, Missing Barcode):");
+    if (reason === null) return false;
+    const notesInput = form.querySelector('input[name="notes"]');
+    if (notesInput) notesInput.value = reason;
+    return true;
+}
+</script>
+
+{% endblock %}

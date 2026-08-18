@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Dispatch{% endblock %}
+{% block breadcrumb %}Dispatch{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+        <div>
+            <h1>🚚 Dispatch</h1>
+            <p>Manage orders ready for shipment and track dispatched shipments.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+
+        <div class="card-header">
+            <div>
+                <h2>🚚 Dispatch Queue</h2>
+                <p>Packed and dispatched warehouse orders</p>
+            </div>
+        </div>
+
+        {% if dispatched_orders %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Customer</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for order in dispatched_orders %}
+
+                <tr>
+
+                    <td>
+                        <a href="{{ url_for('order_detail', order_id=order['id']) }}"
+                           class="order-link">
+                            {{ order['order_no'] }}
+                        </a>
+                    </td>
+
+                    <td>
+                        {{ order['customer'] }}
+                    </td>
+
+                    <td>
+                        <span class="badge {{ order['priority']|lower }}">
+                            {{ order['priority'] }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="status-badge">
+                            {{ order['status'] }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {{ order['created_at'] }}
+                    </td>
+
+                    <td>
+                        <div style="display: flex; gap: 8px;">
+                            {% if order['status'] != 'Dispatched' %}
+                            <form action="{{ url_for('update_dispatch', order_id=order['id']) }}" method="POST" style="margin:0;">
+                                <button type="submit" class="btn btn-success" style="padding: 6px 12px; font-size: 12px;">
+                                    🚚 Dispatch Now
+                                </button>
+                            </form>
+                            {% endif %}
+                            <a href="{{ url_for('order_detail', order_id=order['id']) }}"
+                               class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">
+                                Details
+                            </a>
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state" style="text-align: center; padding: 40px; color: #6b7280;">
+
+            <div class="icon" style="font-size: 40px; margin-bottom: 10px;">🚚</div>
+
+            <h2>No Dispatched or Packed Orders</h2>
+
+            <p>
+                There are currently no orders ready for dispatch.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

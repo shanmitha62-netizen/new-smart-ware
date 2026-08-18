@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Smart Warehouse{% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    {% block head %}{% endblock %}
+
+</head>
+
+
+<body>
+
+<div class="app-container">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo-area">
+
+            <div class="logo-icon">
+                📦
+            </div>
+
+            <div class="logo-text">
+
+                <h2>
+                    Smart<span>Warehouse</span>
+                </h2>
+
+                <small>
+                    Operations Platform
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="sidebar-nav">
+
+            <p class="nav-heading">
+                MAIN MENU
+            </p>
+
+
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-link">
+
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <a href="{{ url_for('orders') }}"
+               class="nav-link">
+
+                <span class="nav-icon">🛒</span>
+                <span>Orders</span>
+
+            </a>
+
+
+            <a href="{{ url_for('inventory') }}"
+               class="nav-link">
+
+                <span class="nav-icon">📦</span>
+                <span>Inventory</span>
+
+            </a>
+
+
+            <a href="{{ url_for('picking') }}"
+               class="nav-link">
+
+                <span class="nav-icon">👷</span>
+                <span>Picking & Packing</span>
+
+            </a>
+
+
+            <a href="{{ url_for('qc') }}"
+               class="nav-link">
+
+                <span class="nav-icon">🔍</span>
+                <span>Quality Check</span>
+
+            </a>
+
+
+            <a href="{{ url_for('dispatch') }}"
+               class="nav-link">
+
+                <span class="nav-icon">🚚</span>
+                <span>Dispatch</span>
+
+            </a>
+
+
+            <div class="nav-divider"></div>
+
+
+            <p class="nav-heading">
+                INTELLIGENCE
+            </p>
+
+
+            <a href="{{ url_for('analytics') }}"
+               class="nav-link">
+
+                <span class="nav-icon">📈</span>
+                <span>Analytics</span>
+
+            </a>
+
+
+            <a href="{{ url_for('alerts') }}"
+               class="nav-link">
+
+                <span class="nav-icon">🚨</span>
+                <span>Alerts & Exceptions</span>
+
+            </a>
+
+        </nav>
+
+
+        <!-- SIDEBAR FOOTER -->
+
+        <div class="sidebar-footer">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div>
+
+                    <strong>
+                        System Online
+                    </strong>
+
+                    <small>
+                        Decision Engine Active
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="hackathon-badge">
+
+                🏆 Hackathon Edition
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button class="menu-toggle"
+                        onclick="toggleSidebar()">
+
+                    ☰
+
+                </button>
+
+
+                <div class="breadcrumb">
+
+                    <span>
+                        Warehouse
+                    </span>
+
+                    <span>
+                        /
+                    </span>
+
+                    <strong>
+
+                        {% block breadcrumb %}
+                        Operations
+                        {% endblock %}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <div class="live-status">
+
+                    <span class="live-dot"></span>
+
+                    <span>
+                        Live
+                    </span>
+
+                </div>
+
+
+                <a href="{{ url_for('alerts') }}"
+                   class="notification-btn">
+
+                    🔔
+
+                </a>
+
+
+                <div class="user-profile">
+
+                    <div class="user-avatar">
+                        WM
+                    </div>
+
+                    <div class="user-info">
+
+                        <strong>
+                            Warehouse Manager
+                        </strong>
+
+                        <small>
+                            Operations Team
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- FLASH MESSAGES -->
+
+        <div class="flash-container">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div class="flash-message">
+
+                            <span>
+                                {% if category == "danger" %}
+                                    ❌
+                                {% elif category == "warning" %}
+                                    ⚠️
+                                {% else %}
+                                    ✅
+                                {% endif %}
+                            </span>
+
+                            <span>
+                                {{ message }}
+                            </span>
+
+                            <button onclick="this.parentElement.remove()">
+                                ×
+                            </button>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+        </div>
+
+
+
+        <!-- PAGE CONTENT -->
+
+        <section class="page-content">
+
+            {% block content %}
+
+            {% endblock %}
+
+        </section>
+
+
+
+        <!-- FOOTER -->
+
+        <footer class="main-footer">
+
+            <div>
+
+                <strong>
+                    Smart Warehouse
+                </strong>
+
+                <span>
+                    — From Warehouse Data to Warehouse Decisions
+                </span>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Hackathon Edition
+                </span>
+
+                <span>
+                    •
+                </span>
+
+                <span>
+                    Flask + SQLite
+                </span>
+
+            </div>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+
+<!-- MOBILE OVERLAY -->
+
+<div class="sidebar-overlay"
+     id="sidebarOverlay"
+     onclick="toggleSidebar()">
+</div>
+
+
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+function toggleSidebar() {
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const overlay =
+        document.getElementById("sidebarOverlay");
+
+    if (sidebar) {
+
+        sidebar.classList.toggle("sidebar-open");
+
+    }
+
+    if (overlay) {
+
+        overlay.classList.toggle("overlay-visible");
+
+    }
+
+}
+
+</script>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+
+</html>

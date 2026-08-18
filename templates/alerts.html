@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Alerts & Exceptions{% endblock %}
+{% block breadcrumb %}Alerts & Exceptions{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="page-header">
+
+        <div>
+            <h1>🚨 Alerts & Exceptions</h1>
+            <p>Monitor critical low stock warnings and operational exceptions.</p>
+        </div>
+
+    </div>
+
+    <!-- LOW STOCK ALERTS -->
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+                <h2>⚠️ Low Stock Alerts</h2>
+                <p>Products that have reached or fallen below reorder threshold</p>
+            </div>
+
+        </div>
+
+        {% if low_stock_products %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th>Location</th>
+                        <th>Current Stock</th>
+                        <th>Reorder Level</th>
+                        <th>Reorder Qty</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for product in low_stock_products %}
+
+                <tr>
+
+                    <td><strong>{{ product["name"] }}</strong></td>
+
+                    <td>{{ product["sku"] }}</td>
+
+                    <td><span class="badge low">{{ product["location"] }}</span></td>
+
+                    <td style="color: #dc2626; font-weight: bold;">{{ product["stock"] }}</td>
+
+                    <td>{{ product["reorder_level"] }}</td>
+
+                    <td>{{ product["reorder_qty"] }}</td>
+
+                    <td><span class="badge danger">⚠️ Reorder Required</span></td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state" style="text-align: center; padding: 25px; color: #16a34a;">
+
+            <div class="icon" style="font-size: 30px;">✅</div>
+
+            <h3>All Stock Levels Healthy</h3>
+
+            <p>No products are currently below reorder levels.</p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- OPERATIONAL EXCEPTIONS -->
+    <div class="dashboard-card">
+
+        <div class="card-header">
+
+            <div>
+                <h2>🚨 Operational Exceptions</h2>
+                <p>Unresolved warehouse system flags and order exceptions</p>
+            </div>
+
+        </div>
+
+        {% if exceptions %}
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Severity</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for ex in exceptions %}
+
+                <tr>
+
+                    <td>#{{ ex["id"] }}</td>
+
+                    <td><strong>{{ ex["type"] }}</strong></td>
+
+                    <td>
+                        {% if ex["severity"] == 'Critical' %}
+                            <span class="badge urgent">🔴 Critical</span>
+                        {% elif ex["severity"] == 'Warning' %}
+                            <span class="badge high">🟡 Warning</span>
+                        {% else %}
+                            <span class="badge medium">🔵 Info</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ ex["description"] }}</td>
+
+                    <td><span class="status-badge">{{ ex["status"] }}</span></td>
+
+                    <td>{{ ex["created_at"] }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state" style="text-align: center; padding: 25px; color: #16a34a;">
+
+            <div class="icon" style="font-size: 30px;">✅</div>
+
+            <h3>No Open Exceptions</h3>
+
+            <p>Your warehouse currently has no active operational exceptions.</p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
